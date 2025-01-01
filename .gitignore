@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# ESLint cache
+.eslintcache
+
+# Build directories
+/dist/
+
+# Editor directories and files
+*.swa-p
