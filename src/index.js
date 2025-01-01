@@ -92,6 +92,38 @@ function svrouter() {
     return router;
   };
 
+  const passExpressRouterMiddleware = (path, middleware) => {
+    const realMiddleware = middleware ? middleware : path;
+    if (typeof realMiddleware !== "function") {
+      throw new Error("The passed middleware must be a function.");
+    } else if (middleware && typeof path !== "string") {
+      throw new Error("The path must be a string.");
+    }
+    const realPath = realMiddleware ? path.replace(/\/+$/, "") : "";
+
+    const callback = (req, res, logFacilities, config, next) => {
+      const previousReqBaseUrl = req.baseUrl;
+      const previousReqUrl = req.url;
+      const previousReqOriginalUrl = req.originalUrl;
+
+      req.baseUrl = realPath;
+      req.originalUrl = req.url;
+      req.url = req.url.substr(realPath.length); // Let's assume the request URL begins with the contents of realPath variable.
+      if (!req.url) req.url = "/";
+
+      const nextCallback = () => {
+        req.baseUrl = previousReqBaseUrl;
+        req.url = previousReqUrl;
+        req.originalUrl = previousReqOriginalUrl;
+        next();
+      };
+
+      realMiddleware(req, res, nextCallback);
+    };
+
+    return passRoute(realPath, callback);
+  };
+
   const methods = http.METHODS
     ? http.METHODS
     : ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"];
@@ -104,6 +136,7 @@ function svrouter() {
   router.all = (path, callback) => addRoute("*", path, callback);
   router.route = addRoute;
   router.pass = passRoute;
+  router.passExpressRouterMiddleware = passExpressRouterMiddleware;
 
   return router;
 }

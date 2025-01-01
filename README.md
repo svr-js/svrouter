@@ -87,6 +87,21 @@ The _callback_ parameter has these arguments of the SVR.JS mod callback:
 
 You can read more about the SVR.JS mod callbacks in the [SVR.JS mod API documentation](https://svrjs.org/docs/api/svrjs-api).
 
+### _router.passExpressRouterMiddleware([path, ]middleware)_
+
+Parameters:
+ - _path_ - the path (begins with "/"), for which the route applies. (optional, _String_)
+ - _middleware_ - the middleware compatible with the `router` library (_Function_)
+
+Returns: the SVRouter router (so that you can chain the methods for routes or pass-throughs)
+
+The function adds middleware compatible with the `router` library to the SVRouter router.
+
+The _middleware_ parameter has these arguments of middleware compatible with the `router` library:
+ - _req_ - the request object
+ - _res_ - the response object
+ - _next_ - the callback which passes the execution to other routes, SVR.JS mods and SVR.JS internal handlers.
+
 ### _router.get(path, callback)_
 An alias to the _router.route("GET", path, callback)_ function
 
