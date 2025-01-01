@@ -76,7 +76,7 @@ Parameters:
 
 Returns: the SVRouter router (so that you can chain the methods for routes or pass-throughs)
 
-The function adds a pass-through (can be middleware) to the SVRouter router. The pass-through can be to an another SVRouter router (the absolute request URLs need to be provided for the _router.route_ function in the SVRouter router).
+The function adds a pass-through (can be middleware) to the SVRouter router. The pass-through can be to an another SVRouter router (the absolute request URLs need to be provided for the _router.route_ function in the SVRouter router). Note that the request URL is not rewritten though, unlike in the `router` library, so if you write middleware for SVRouter, you may need to include the request URL prefix in the parameters of the function that returns the SVR.JS mod callback.
 
 The _callback_ parameter has these arguments of the SVR.JS mod callback:
  - _req_ - the SVR.JS request object
