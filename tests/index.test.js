@@ -150,6 +150,35 @@ describe("SVRouter", () => {
     expect(res.end).toHaveBeenCalledWith("Pass-through matched");
   });
 
+  test("should work with chained adding of routes and pass-throughs", () => {
+    const req = {
+      method: "GET",
+      parsedURL: { pathname: "/anything" },
+      params: null
+    };
+    const res = {};
+
+    router
+      .get("/anything", (req, res, logFacilities, config, next) => {
+        res.passedThroughGet = true;
+        next();
+      })
+      .pass((req, res, logFacilities, config, next) => {
+        res.passedThroughPass = true;
+        next();
+      })
+      .pass((req, res, logFacilities, config, next) => {
+        res.passedThroughPass2 = true;
+        next();
+      });
+
+    router(req, res, null, null, () => {});
+
+    expect(res.passedThroughGet).toBe(true);
+    expect(res.passedThroughPass).toBe(true);
+    expect(res.passedThroughPass2).toBe(true);
+  });
+
   test("should throw an error if method is not a string in route", () => {
     expect(() => {
       router.route(123, "/path", () => {});

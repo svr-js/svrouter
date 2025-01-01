@@ -4,46 +4,6 @@ const http = require("http");
 function svrouter() {
   const routes = [];
 
-  const addRoute = (method, path, callback) => {
-    if (typeof method !== "string") {
-      throw new Error("The HTTP method must be a string.");
-    } else if (typeof path !== "string") {
-      throw new Error("The route path must be a string.");
-    } else if (typeof callback !== "function") {
-      throw new Error("The route callback must be a function.");
-    }
-
-    routes.push({
-      method: method === "*" ? null : method.toUpperCase(),
-      pathFunction: match(path),
-      callback: callback
-    });
-  };
-
-  const passRoute = (path, callback) => {
-    const realCallback = callback ? callback : path;
-    if (typeof realCallback !== "function") {
-      throw new Error("The passed callback must be a function.");
-    } else if (callback && typeof path !== "string") {
-      throw new Error("The path must be a function");
-    }
-
-    routes.push({
-      method: null,
-      pathFunction: callback
-        ? (checkedPath) =>
-            checkedPath == path ||
-            checkedPath.substring(0, path.length + 1) == path + "/"
-              ? {
-                  path: checkedPath,
-                  params: null
-                }
-              : false
-        : () => true,
-      callback: realCallback
-    });
-  };
-
   const router = (req, res, logFacilities, config, next) => {
     let index = 0;
     let previousReqParams = req.params;
@@ -85,6 +45,50 @@ function svrouter() {
     };
 
     nextRoute();
+  };
+
+  const addRoute = (method, path, callback) => {
+    if (typeof method !== "string") {
+      throw new Error("The HTTP method must be a string.");
+    } else if (typeof path !== "string") {
+      throw new Error("The route path must be a string.");
+    } else if (typeof callback !== "function") {
+      throw new Error("The route callback must be a function.");
+    }
+
+    routes.push({
+      method: method === "*" ? null : method.toUpperCase(),
+      pathFunction: match(path),
+      callback: callback
+    });
+
+    return router;
+  };
+
+  const passRoute = (path, callback) => {
+    const realCallback = callback ? callback : path;
+    if (typeof realCallback !== "function") {
+      throw new Error("The passed callback must be a function.");
+    } else if (callback && typeof path !== "string") {
+      throw new Error("The path must be a function");
+    }
+
+    routes.push({
+      method: null,
+      pathFunction: callback
+        ? (checkedPath) =>
+            checkedPath == path ||
+            checkedPath.substring(0, path.length + 1) == path + "/"
+              ? {
+                  path: checkedPath,
+                  params: null
+                }
+              : false
+        : () => true,
+      callback: realCallback
+    });
+
+    return router;
   };
 
   const methods = http.METHODS

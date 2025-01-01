@@ -51,6 +51,8 @@ Parameters:
  - _path_ - the route path, for which the route applies. The route paths are process via the [`path-to-regexp` library](https://www.npmjs.com/package/path-to-regexp) (_String_)
  - _callback_ - the SVR.JS mod callback applied for the route (_Function_)
 
+Returns: the SVRouter router (so that you can chain the methods for adding routes or pass-throughs)
+
 The function adds a route to the SVRouter router.
 
 If the _method_ parameter is `"*"`, the route will apply to all the methods
@@ -71,6 +73,8 @@ You can read more about the SVR.JS mod callbacks in the [SVR.JS mod API document
 Parameters:
  - _path_ - the path, for which the route applies. (optional, _String_)
  - _callback_ - the SVR.JS mod callback, which the SVRouter router will pass to (_Function_)
+
+Returns: the SVRouter router (so that you can chain the methods for routes or pass-throughs)
 
 The function adds middleware to the SVRouter router. The middleware can be an another SVRouter router (the absolute request URLs need to be provided for the _router.route_ function in the SVRouter router).
 
