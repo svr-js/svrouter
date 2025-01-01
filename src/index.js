@@ -72,11 +72,11 @@ function svrouter() {
     } else if (callback && typeof path !== "string") {
       throw new Error("The path must be a function");
     }
-    const realPath = callback ? path.replace(/\/+$/, "") : null;
+    const realPath = callback ? path.replace(/\/+$/, "") : "";
 
     routes.push({
       method: null,
-      pathFunction: callback
+      pathFunction: realPath // If there is "/" path parameter, then the realPath variable will be "", which means that the pass-through will occur for all requests
         ? (checkedPath) =>
             checkedPath == realPath ||
             checkedPath.substring(0, realPath.length + 1) == realPath + "/"
