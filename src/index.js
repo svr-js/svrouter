@@ -70,7 +70,7 @@ function svrouter() {
     if (typeof realCallback !== "function") {
       throw new Error("The passed callback must be a function.");
     } else if (callback && typeof path !== "string") {
-      throw new Error("The path must be a function");
+      throw new Error("The path must be a string.");
     }
     const realPath = callback ? path.replace(/\/+$/, "") : "";
 

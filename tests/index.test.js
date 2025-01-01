@@ -216,7 +216,7 @@ describe("SVRouter", () => {
   test("should throw an error if path is not a string in passRoute", () => {
     expect(() => {
       router.pass(123, () => {});
-    }).toThrow("The path must be a function");
+    }).toThrow("The path must be a string.");
   });
 
   test("should handle errors thrown in route callbacks gracefully", () => {
