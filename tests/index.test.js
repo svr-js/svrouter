@@ -179,6 +179,28 @@ describe("SVRouter", () => {
     expect(res.passedThroughPass2).toBe(true);
   });
 
+  test("should pass through log facilities and configuration objects in routes", () => {
+    const req = {
+      method: "GET",
+      parsedURL: { pathname: "/anything" },
+      params: null
+    };
+    const res = {};
+    const logFacilities = {};
+    const config = {};
+    const passedThrough = {};
+
+    router.pass((req, res, logFacilities, config) => {
+      passedThrough.logFacilities = logFacilities;
+      passedThrough.config = config;
+    });
+
+    router(req, res, logFacilities, config, () => {});
+
+    expect(passedThrough.logFacilities).toBe(logFacilities);
+    expect(passedThrough.config).toBe(config);
+  });
+
   test("should throw an error if method is not a string in route", () => {
     expect(() => {
       router.route(123, "/path", () => {});
