@@ -49,6 +49,27 @@ describe("SVRouter", () => {
     expect(res.end).toHaveBeenCalledWith("POST route matched");
   });
 
+  test("should add and handle a route for all HTTP methods", () => {
+    const req = {
+      method: "GET",
+      parsedURL: { pathname: "/test" },
+      params: null
+    };
+    const res = {
+      end: jest.fn()
+    };
+
+    router.all("/test", (req, res) => {
+      res.end("GET route matched");
+    });
+
+    router(req, res, null, null, () => {
+      res.end("No route matched");
+    });
+
+    expect(res.end).toHaveBeenCalledWith("GET route matched");
+  });
+
   test("should correctly parse parameters in the route", () => {
     const req = {
       method: "GET",

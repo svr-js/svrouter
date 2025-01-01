@@ -14,7 +14,7 @@ function svrouter() {
     }
 
     routes.push({
-      method: method.toUpperCase(),
+      method: method === "*" ? null : method.toUpperCase(),
       pathFunction: match(path),
       callback: callback
     });
@@ -96,6 +96,7 @@ function svrouter() {
       addRoute(method, path, callback);
   });
 
+  router.all = (path, callback) => addRoute("*", path, callback);
   router.route = addRoute;
   router.pass = passRoute;
 

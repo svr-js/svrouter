@@ -53,6 +53,8 @@ Parameters:
 
 The function adds a route to the SVRouter router.
 
+If the _method_ parameter is `"*"`, the route will apply to all the methods
+
 The _callback_ parameter has these arguments of the SVR.JS mod callback:
  - _req_ - the SVR.JS request object
  - _res_ - the SVR.JS response object
@@ -98,3 +100,6 @@ An alias to the _router.route("DELETE", path, callback)_ function
 
 ### _router.head(path, callback)_
 An alias to the _router.route("HEAD", path, callback)_ function
+
+### _router.all(path, callback)_
+An alias to the _router.route("*", path, callback)_ function
