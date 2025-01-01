@@ -99,7 +99,7 @@ function svrouter() {
     } else if (middleware && typeof path !== "string") {
       throw new Error("The path must be a string.");
     }
-    const realPath = realMiddleware ? path.replace(/\/+$/, "") : "";
+    const realPath = middleware ? path.replace(/\/+$/, "") : "";
 
     const callback = (req, res, logFacilities, config, next) => {
       const previousReqBaseUrl = req.baseUrl;
