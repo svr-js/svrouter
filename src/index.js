@@ -72,13 +72,14 @@ function svrouter() {
     } else if (callback && typeof path !== "string") {
       throw new Error("The path must be a function");
     }
+    const realPath = callback ? path.replace(/\/+$/, "") : null;
 
     routes.push({
       method: null,
       pathFunction: callback
         ? (checkedPath) =>
-            checkedPath == path ||
-            checkedPath.substring(0, path.length + 1) == path + "/"
+            checkedPath == realPath ||
+            checkedPath.substring(0, realPath.length + 1) == realPath + "/"
               ? {
                   path: checkedPath,
                   params: null
