@@ -48,7 +48,7 @@ The function is a SVR.JS mod callback. You can read more about the SVR.JS mod ca
 
 Parameters:
  - _method_ - the HTTP method, for which the route applies (_String_)
- - _path_ - the route path, for which the route applies. The route paths are process via the [`path-to-regexp` library](https://www.npmjs.com/package/path-to-regexp) (_String_)
+ - _path_ - the route path (begins with "/"), for which the route applies. The route paths are process via the [`path-to-regexp` library](https://www.npmjs.com/package/path-to-regexp) (_String_)
  - _callback_ - the SVR.JS mod callback applied for the route (_Function_)
 
 Returns: the SVRouter router (so that you can chain the methods for adding routes or pass-throughs)
@@ -71,7 +71,7 @@ You can read more about the SVR.JS mod callbacks in the [SVR.JS mod API document
 ### _router.pass([path, ]callback)_
 
 Parameters:
- - _path_ - the path, for which the route applies. (optional, _String_)
+ - _path_ - the path (begins with "/"), for which the route applies. (optional, _String_)
  - _callback_ - the SVR.JS mod callback, which the SVRouter router will pass to (_Function_)
 
 Returns: the SVRouter router (so that you can chain the methods for routes or pass-throughs)
