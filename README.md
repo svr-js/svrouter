@@ -95,7 +95,7 @@ Parameters:
 
 Returns: the SVRouter router (so that you can chain the methods for routes or pass-throughs)
 
-The function adds middleware compatible with the `router` library to the SVRouter router.
+The function adds middleware compatible with the `router` library to the SVRouter router. Middleware that depends on Express's request and response properties may not work.
 
 The _middleware_ parameter has these arguments of middleware compatible with the `router` library:
  - _req_ - the request object
