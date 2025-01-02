@@ -1,11 +1,21 @@
 # Dependencies
 node_modules/
 
+# Test coverage
+/coverage/
+
 # ESLint cache
 .eslintcache
 
 # Build directories
 /dist/
 
-# Editor directories and files
-*.swa-p
+# OS-specific files
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# Temporary files used by the editor
+*.swp
+*.swo
