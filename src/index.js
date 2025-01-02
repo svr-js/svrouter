@@ -3,19 +3,25 @@ const http = require("http");
 
 function svrouter() {
   const routes = [];
-
   const router = (req, res, logFacilities, config, next) => {
     let index = 0;
     let previousReqParams = req.params;
+    let previousReqSvrouterBase = req.svrouterBase;
     let paramsPresent = false;
+    let passPathPresent = false;
 
     const nextRoute = () => {
       if (paramsPresent) req.params = previousReqParams;
+      if (passPathPresent) req.svrouterBase = previousReqSvrouterBase;
       let currentRoute = routes[index++];
       let currentMatch =
         currentRoute && currentRoute.pathFunction
-          ? currentRoute.pathFunction(req.parsedURL.pathname)
-          : false;
+          ? currentRoute.pathFunction(
+              req.parsedURL.pathname.substring(
+                (req.svrouterBase ? req.svrouterBase : "").length
+              )
+            )
+          : false; // Let's assume the request URL begins with the contents of the req.svrouterBase property.
       while (
         currentRoute &&
         ((currentRoute.method && req.method != currentRoute.method) ||
@@ -24,17 +30,26 @@ function svrouter() {
         currentRoute = routes[index++];
         currentMatch =
           currentRoute && currentRoute.pathFunction
-            ? currentRoute.pathFunction(req.parsedURL.pathname)
+            ? currentRoute.pathFunction(
+                req.parsedURL.pathname.substring(
+                  (req.svrouterBase ? req.svrouterBase : "").length
+                )
+              )
             : false;
       }
       if (currentRoute && currentRoute.callback) {
         try {
           paramsPresent = Boolean(currentMatch.params);
+          passPathPresent = Boolean(currentRoute.passPath);
           if (paramsPresent)
             req.params =
               currentMatch && currentMatch.params
                 ? currentMatch.params
                 : Object.create(null);
+          if (passPathPresent)
+            req.svrouterBase =
+              (req.svrouterBase ? req.svrouterBase : "") +
+              currentRoute.passPath;
           currentRoute.callback(req, res, logFacilities, config, nextRoute);
         } catch (err) {
           res.error(500, err);
@@ -59,7 +74,8 @@ function svrouter() {
     routes.push({
       method: method === "*" ? null : method.toUpperCase(),
       pathFunction: match(path),
-      callback: callback
+      callback: callback,
+      passPath: null
     });
 
     return router;
@@ -86,7 +102,8 @@ function svrouter() {
                 }
               : false
         : () => true,
-      callback: realCallback
+      callback: realCallback,
+      passPath: realPath
     });
 
     return router;
@@ -105,16 +122,20 @@ function svrouter() {
       const previousReqBaseUrl = req.baseUrl;
       const previousReqUrl = req.url;
       const previousReqOriginalUrl = req.originalUrl;
+      const previousReqSvrouterBase = req.svrouterBase;
 
-      req.baseUrl = realPath;
+      const svrouterBase = req.svrouterBase ? req.svrouterBase : "";
+      req.baseUrl = svrouterBase;
       req.originalUrl = req.url;
-      req.url = req.url.substr(realPath.length); // Let's assume the request URL begins with the contents of realPath variable.
+      req.url = req.url.substr(svrouterBase.length); // Let's assume the request URL begins with the contents of svrouterBase variable.
       if (!req.url) req.url = "/";
+      req.svrouterBase = undefined;
 
       const nextCallback = () => {
         req.baseUrl = previousReqBaseUrl;
         req.url = previousReqUrl;
         req.originalUrl = previousReqOriginalUrl;
+        req.svrouterBase = previousReqSvrouterBase;
         next();
       };
 

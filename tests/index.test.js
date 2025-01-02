@@ -228,7 +228,7 @@ describe("SVRouter", () => {
     expect(res.end).toHaveBeenCalledWith("Middleware matched");
   });
 
-  test("should restore req.url and req.baseUrl after middleware runs", () => {
+  test("should restore req.url and req.baseUrl after middleware added with passExpressRouterMiddleware runs", () => {
     const req = {
       method: "GET",
       parsedURL: { pathname: "/api/resource" },
@@ -310,6 +310,113 @@ describe("SVRouter", () => {
 
     expect(res.firstMiddlewareRan).toBe(true);
     expect(res.secondMiddlewareRan).toBe(true);
+  });
+
+  test("should handle nested routers correctly", () => {
+    const childRouter = svrouter();
+
+    const req = {
+      method: "GET",
+      parsedURL: { pathname: "/parent/child/resource" },
+      params: null
+    };
+    const res = {
+      end: jest.fn()
+    };
+
+    childRouter.get("/child/resource", (req, res) => {
+      res.end("Child router route matched");
+    });
+
+    router.pass("/parent", childRouter);
+
+    router(req, res, null, null, () => {
+      res.end("No route matched");
+    });
+
+    expect(res.end).toHaveBeenCalledWith("Child router route matched");
+  });
+
+  test("should fallback to parent router if no route matches in child router", () => {
+    const childRouter = svrouter();
+
+    const req = {
+      method: "GET",
+      parsedURL: { pathname: "/parent/child/resource" },
+      params: null
+    };
+    const res = {
+      end: jest.fn()
+    };
+
+    router.pass("/parent", childRouter);
+    router.get("/parent/child/resource", (req, res) => {
+      res.end("Parent router fallback route matched");
+    });
+
+    router(req, res, null, null, () => {
+      res.end("No route matched");
+    });
+
+    expect(res.end).toHaveBeenCalledWith(
+      "Parent router fallback route matched"
+    );
+  });
+
+  test("should handle parameterized routes in nested routers", () => {
+    const childRouter = svrouter();
+
+    const req = {
+      method: "GET",
+      parsedURL: { pathname: "/parent/user/42/details" },
+      params: null
+    };
+    const res = {
+      end: jest.fn()
+    };
+
+    childRouter.get("/user/:id/details", (req, res) => {
+      res.end(`User ID is ${req.params.id}`);
+    });
+
+    router.pass("/parent", childRouter);
+
+    router(req, res, null, null, () => {
+      res.end("No route matched");
+    });
+
+    expect(res.end).toHaveBeenCalledWith("User ID is 42");
+  });
+
+  test("should handle multiple nested routers", () => {
+    const childRouter1 = svrouter();
+    const childRouter2 = svrouter();
+
+    const req = {
+      method: "GET",
+      parsedURL: { pathname: "/parent/child2/resource" },
+      params: null
+    };
+    const res = {
+      end: jest.fn()
+    };
+
+    childRouter1.get("/resource", (req, res) => {
+      res.end("Child router 1 route matched");
+    });
+
+    childRouter2.get("/resource", (req, res) => {
+      res.end("Child router 2 route matched");
+    });
+
+    router.pass("/parent/child1", childRouter1);
+    router.pass("/parent/child2", childRouter2);
+
+    router(req, res, null, null, () => {
+      res.end("No route matched");
+    });
+
+    expect(res.end).toHaveBeenCalledWith("Child router 2 route matched");
   });
 
   test("should throw an error if method is not a string in route", () => {
