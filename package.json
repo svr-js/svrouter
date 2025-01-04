@@ -1,5 +1,5 @@
 {
-  "name": "svrouter",
+  "name": "svrrouter",
   "version": "0.0.0",
   "description": "A router library for SVR.JS 4.x mods",
   "main": "dist/index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.svrjs.org/svrjs/svrouter.git"
+    "url": "https://git.svrjs.org/svrjs/svrrouter.git"
   },
   "keywords": [
     "routing",

@@ -1,10 +1,10 @@
-const svrouter = require("../src/index.js");
+const svrrouter = require("../src/index.js");
 
-describe("SVRouter", () => {
+describe("SVRRouter", () => {
   let router;
 
   beforeEach(() => {
-    router = svrouter();
+    router = svrrouter();
   });
 
   test("should add and handle a GET route", () => {
@@ -313,7 +313,7 @@ describe("SVRouter", () => {
   });
 
   test("should handle nested routers correctly", () => {
-    const childRouter = svrouter();
+    const childRouter = svrrouter();
 
     const req = {
       method: "GET",
@@ -338,7 +338,7 @@ describe("SVRouter", () => {
   });
 
   test("should fallback to parent router if no route matches in child router", () => {
-    const childRouter = svrouter();
+    const childRouter = svrrouter();
 
     const req = {
       method: "GET",
@@ -364,7 +364,7 @@ describe("SVRouter", () => {
   });
 
   test("should handle parameterized routes in nested routers", () => {
-    const childRouter = svrouter();
+    const childRouter = svrrouter();
 
     const req = {
       method: "GET",
@@ -389,8 +389,8 @@ describe("SVRouter", () => {
   });
 
   test("should handle multiple nested routers", () => {
-    const childRouter1 = svrouter();
-    const childRouter2 = svrouter();
+    const childRouter1 = svrrouter();
+    const childRouter2 = svrrouter();
 
     const req = {
       method: "GET",

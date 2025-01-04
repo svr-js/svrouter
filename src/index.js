@@ -1,27 +1,27 @@
 const { match } = require("path-to-regexp");
 const http = require("http");
 
-function svrouter() {
+function svrrouter() {
   const routes = [];
   const router = (req, res, logFacilities, config, next) => {
     let index = 0;
     let previousReqParams = req.params;
-    let previousReqSvrouterBase = req.svrouterBase;
+    let previousReqSvrouterBase = req.svrrouterBase;
     let paramsPresent = false;
     let passPathPresent = false;
 
     const nextRoute = () => {
       if (paramsPresent) req.params = previousReqParams;
-      if (passPathPresent) req.svrouterBase = previousReqSvrouterBase;
+      if (passPathPresent) req.svrrouterBase = previousReqSvrouterBase;
       let currentRoute = routes[index++];
       let currentMatch =
         currentRoute && currentRoute.pathFunction
           ? currentRoute.pathFunction(
               req.parsedURL.pathname.substring(
-                (req.svrouterBase ? req.svrouterBase : "").length
+                (req.svrrouterBase ? req.svrrouterBase : "").length
               )
             )
-          : false; // Let's assume the request URL begins with the contents of the req.svrouterBase property.
+          : false; // Let's assume the request URL begins with the contents of the req.svrrouterBase property.
       while (
         currentRoute &&
         ((currentRoute.method && req.method != currentRoute.method) ||
@@ -32,7 +32,7 @@ function svrouter() {
           currentRoute && currentRoute.pathFunction
             ? currentRoute.pathFunction(
                 req.parsedURL.pathname.substring(
-                  (req.svrouterBase ? req.svrouterBase : "").length
+                  (req.svrrouterBase ? req.svrrouterBase : "").length
                 )
               )
             : false;
@@ -47,8 +47,8 @@ function svrouter() {
                 ? currentMatch.params
                 : Object.create(null);
           if (passPathPresent)
-            req.svrouterBase =
-              (req.svrouterBase ? req.svrouterBase : "") +
+            req.svrrouterBase =
+              (req.svrrouterBase ? req.svrrouterBase : "") +
               currentRoute.passPath;
           currentRoute.callback(req, res, logFacilities, config, nextRoute);
         } catch (err) {
@@ -122,20 +122,20 @@ function svrouter() {
       const previousReqBaseUrl = req.baseUrl;
       const previousReqUrl = req.url;
       const previousReqOriginalUrl = req.originalUrl;
-      const previousReqSvrouterBase = req.svrouterBase;
+      const previousReqSvrouterBase = req.svrrouterBase;
 
-      const svrouterBase = req.svrouterBase ? req.svrouterBase : "";
-      req.baseUrl = svrouterBase;
+      const svrrouterBase = req.svrrouterBase ? req.svrrouterBase : "";
+      req.baseUrl = svrrouterBase;
       req.originalUrl = req.url;
-      req.url = req.url.substr(svrouterBase.length); // Let's assume the request URL begins with the contents of svrouterBase variable.
+      req.url = req.url.substr(svrrouterBase.length); // Let's assume the request URL begins with the contents of svrrouterBase variable.
       if (!req.url) req.url = "/";
-      req.svrouterBase = undefined;
+      req.svrrouterBase = undefined;
 
       const nextCallback = () => {
         req.baseUrl = previousReqBaseUrl;
         req.url = previousReqUrl;
         req.originalUrl = previousReqOriginalUrl;
-        req.svrouterBase = previousReqSvrouterBase;
+        req.svrrouterBase = previousReqSvrouterBase;
         next();
       };
 
@@ -162,4 +162,4 @@ function svrouter() {
   return router;
 }
 
-module.exports = svrouter;
+module.exports = svrrouter;
