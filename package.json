@@ -1,6 +1,6 @@
 {
   "name": "svrrouter",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A router library for SVR.JS 4.x mods",
   "main": "dist/index.js",
   "scripts": {
